@@ -2,48 +2,63 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-// Importa este trait para Sanctum:
 use Laravel\Sanctum\HasApiTokens;
-
-// Importa este trait para Spatie:
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'fec_nacimiento',
+        'pais',
+        'telefono',
+        'foto_perfil',
+        'direccion',
+        'sexo',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string,string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'fec_nacimiento' => 'date',
     ];
+
+    // Relaciones
+    public function reservas(): HasMany
+    {
+        return $this->hasMany(Reserva::class);
+    }
+
+    public function facturas(): HasMany
+    {
+        return $this->hasMany(Factura::class);
+    }
+
+    public function operadorHoteles(): HasMany
+    {
+        return $this->hasMany(OperadorHotel::class);
+    }
+
+    public function administradorHoteles(): HasMany
+    {
+        return $this->hasMany(AdministradorHotel::class);
+    }
+
+    public function billeteraElectronica(): HasMany
+    {
+        return $this->hasMany(BilleteraElectronica::class);
+    }
 }
